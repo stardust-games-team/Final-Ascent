@@ -17,3 +17,5 @@ MemoryCaptures/
 *.pidb
 *.booproj
 .DS_Store
+Assets/Asset Store Packages/
+*.unitypackage
