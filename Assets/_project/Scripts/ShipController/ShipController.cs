@@ -2,12 +2,13 @@ using UnityEngine;
 
 public class ShipController : MonoBehaviour
 {
+    // Pitch is up and down, Yaw is left right, Roll is rotation, and thrust is forward or backward
     [SerializeField]
     [Range(1000f, 10000f)]
-    float _thrustForce = 7500f,
-     _pitchForce = 6000f,
+    float _thrustForce = 5000f,
+     _pitchForce = 2000f,
       _rollForce = 1000f,
-       _yawForce = 2000f;
+       _yawForce = 1500f;
 
     Rigidbody _rigidBody;
     [Range(-1f, 1f)]
