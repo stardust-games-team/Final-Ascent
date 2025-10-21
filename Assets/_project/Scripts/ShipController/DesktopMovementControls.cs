@@ -24,7 +24,7 @@ public class DesktopMovementControls : MovementControlsBase
         {
             Vector3 mousePosition = Input.mousePosition;
             float pitch = (mousePosition.y - ScreenCenter.y) / ScreenCenter.y;
-            return Mathf.Abs(pitch) > _deadZoneRadius ? pitch : 0f;
+            return Mathf.Abs(pitch) > _deadZoneRadius ? pitch * -1 : 0f;
         }
     }
     public override float RollAmount
