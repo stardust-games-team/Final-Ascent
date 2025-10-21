@@ -36,22 +36,23 @@ public class Blaster : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             FireProjectile();
+
         }
     }
 
     void FireProjectile()
     {
         // Spawn aligned to the muzzle
-        Projectile projectile = Instantiate(_projectilePrefab, _muzzle.position, _muzzle.rotation);
+        Projectile projectile = Instantiate(_projectilePrefab, _muzzle.position, transform.rotation);
 
         // Inherit the ship's current world velocity if available
-        Vector3 inheritVel = _shipRb ? _shipRb.linearVelocity : Vector3.zero;
+        // Vector3 inheritVel = _shipRb ? _shipRb.linearVelocity : Vector3.zero;
 
         // Give the projectile the ship collider to ignore
-        ShipController ship = GetComponentInParent<ShipController>();
-        if (ship) projectile.SetShipCollider(ship.GetComponent<Collider>());
+        // ShipController ship = GetComponentInParent<ShipController>();
+        // if (ship) projectile.SetShipCollider(ship.GetComponent<Collider>());
 
         // Tell the projectile to launch with inherited velocity
-        projectile.Launch(inheritVel);
+        // projectile.Launch(inheritVel);
     }
 }
