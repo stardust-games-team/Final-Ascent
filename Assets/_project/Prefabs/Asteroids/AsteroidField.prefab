@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 4041349589614031293}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 107.8514, y: 19.903194, z: 266.43057}
+  m_LocalPosition: {x: 94.7, y: 19.903194, z: 1000}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -44,3 +44,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 467998da07702bf41b2f3770de2cc8e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _asteroidCount: 500
+  _radius: 300
+  _maxScale: 5
+  _asteroidPrefabs:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 3915015309390189125, guid: 567c334e43e7138478739da36d8f9f08, type: 3}
+  - {fileID: 2777292016649111432, guid: 70657297337776d4087b7e03df96392f, type: 3}
+  - {fileID: 1411368683043275160, guid: 792b756e57f29414caaa18e11314578f, type: 3}
+  - {fileID: 2398483859674969279, guid: dcc63e11f8cb3fc4b9d74391e7f2a60f, type: 3}
+  - {fileID: 7624964885608647894, guid: 23a623b3e7ed57f40bdefba6fc1371aa, type: 3}
+  - {fileID: 7184669973428382536, guid: bc2626f3349805547951abc9f0680084, type: 3}
+  - {fileID: 2597312544022175127, guid: 2fb0c797f52995144acfa4dbf67dd987, type: 3}
+  - {fileID: 3099833242566551142, guid: 7ec20f2eb5318dc4b99e5f51124b04b1, type: 3}
+  - {fileID: 3504991958841055692, guid: cd7f8dcef43095c40a922e191c5bb495, type: 3}
+  - {fileID: 7519910097124733016, guid: c888921ba6916af46bcd89f26c8f7ff2, type: 3}
+  - {fileID: 3379694931516766780, guid: 37df39557fe9e9a40933cc510d0bf163, type: 3}
+  - {fileID: 7666860030233765918, guid: dd6a0fbd45020164b852c96f85719cb7, type: 3}
+  - {fileID: 2534566463802291510, guid: dc4b449d9bbaf014c939d8c610905a79, type: 3}
