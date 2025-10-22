@@ -390,18 +390,6 @@ PrefabInstance:
       value: Rock1
       objectReference: {fileID: 0}
     - target: {fileID: 7085663031228406371, guid: 4bc5d189ae8cf4a488b495acac8bd1f8, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 35.307995
-      objectReference: {fileID: 0}
-    - target: {fileID: 7085663031228406371, guid: 4bc5d189ae8cf4a488b495acac8bd1f8, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 35.307995
-      objectReference: {fileID: 0}
-    - target: {fileID: 7085663031228406371, guid: 4bc5d189ae8cf4a488b495acac8bd1f8, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 35.307995
-      objectReference: {fileID: 0}
-    - target: {fileID: 7085663031228406371, guid: 4bc5d189ae8cf4a488b495acac8bd1f8, type: 3}
       propertyPath: m_LocalPosition.x
       value: 25.227
       objectReference: {fileID: 0}
@@ -5780,13 +5768,13 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6224473573716969044, guid: b2acc77eb0cc6674ebf31b43cc86b6d1, type: 3}
-      propertyPath: _asteroidPrefabs.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6224473573716969044, guid: b2acc77eb0cc6674ebf31b43cc86b6d1, type: 3}
       propertyPath: '_asteroidPrefabs.Array.data[0]'
       value: 
       objectReference: {fileID: 2043602218}
+    - target: {fileID: 6224473573716969044, guid: b2acc77eb0cc6674ebf31b43cc86b6d1, type: 3}
+      propertyPath: '_asteroidPrefabs.Array.data[1]'
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
