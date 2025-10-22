@@ -5844,7 +5844,7 @@ PrefabInstance:
     - target: {fileID: 6224473573716969044, guid: b2acc77eb0cc6674ebf31b43cc86b6d1, type: 3}
       propertyPath: '_asteroidPrefabs.Array.data[1]'
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 2766985488887773830, guid: f8b7cd451e1672d4fb1ff46f3191e43d, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
