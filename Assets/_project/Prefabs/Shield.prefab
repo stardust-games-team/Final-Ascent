@@ -142,7 +142,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damageLayers:
     serializedVersion: 2
-    m_Bits: 2048
+    m_Bits: 6144
   damage: 1
   reactToTriggers: 1
 --- !u!54 &6411926651071012665
