@@ -15,17 +15,17 @@ public class GameManager : MonoBehaviour
     {
         if (ShouldQuitGame)
         {
-            ShouldGame();
+            QuitGame();
         }
     }
 
-    void ShouldGame()
+    void QuitGame()
     {
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false; 
-#else
-        // todo handle WebGL
-        Application.Quit();
-#endif
+    #if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false; 
+    #else
+            // todo handle WebGL
+           Application.Quit();
+    #endif
     }
 }

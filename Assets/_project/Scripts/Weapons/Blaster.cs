@@ -1,58 +1,127 @@
+// using UnityEngine;
+
+// public class Blaster : MonoBehaviour
+// {
+//     [SerializeField] Transform _muzzle;
+//     [SerializeField] Projectile _projectilePrefab;
+//     [SerializeField] Transform _crosshair;
+
+//     [SerializeField] bool _smoothAim = true;
+//     [SerializeField] float _turnSpeed = 720f;
+//     [SerializeField] float _deadZone = 0.0001f;
+//     float _coolDownTime = 0.25f;
+
+
+//     Rigidbody _shipRb;
+//     IWeaponControls _weaponInput;
+
+
+//     bool CanFire
+//     {
+//         get
+//         {
+//             _coolDownTime -= Time.deltaTime;
+//             return _coolDownTime <= 0f;
+//         }
+//     }
+
+//     float _coolDown;
+
+//     void Awake()
+//     {
+//         // Cache once; okay if null (e.g., kinematic ship)
+//         _shipRb = GetComponentInParent<Rigidbody>();
+//     }
+
+//     void LateUpdate()
+//     {
+//         if (!_crosshair || !_muzzle) return;
+
+//         Vector3 dirToTarget = _crosshair.position - _muzzle.position;
+//         if (dirToTarget.sqrMagnitude < _deadZone) return;
+
+//         Quaternion targetRotation = Quaternion.LookRotation(dirToTarget.normalized);
+//         _muzzle.rotation = _smoothAim
+//             ? Quaternion.RotateTowards(_muzzle.rotation, targetRotation, _turnSpeed * Time.deltaTime)
+//             : targetRotation;
+//     }
+
+//     void Update()
+//     {
+//         if (_weaponInput == null) return;
+//         if (CanFire && _weaponInput.PrimaryFired)
+//         {
+//             FireProjectile();
+
+//         }
+//     }
+
+//     public void Init(IWeaponControls weaponInput, float coolDown)
+//     {
+//         _weaponInput = weaponInput;
+//         _coolDown = coolDown;
+//     }
+
+//     void FireProjectile()
+//     {
+//         // Spawn aligned to the muzzle
+//         Projectile projectile = Instantiate(_projectilePrefab, _muzzle.position, transform.rotation);
+//     }
+
+
+// }
+
 using UnityEngine;
 
 public class Blaster : MonoBehaviour
 {
-    [SerializeField] Transform _muzzle;
     [SerializeField] Projectile _projectilePrefab;
-    [SerializeField] Transform _crosshair;
 
-    [SerializeField] bool _smoothAim = true;
-    [SerializeField] float _turnSpeed = 720f;
-    [SerializeField] float _deadZone = 0.0001f;
-
-    Rigidbody _shipRb;
-
-    void Awake()
+    [SerializeField] Transform _muzzle;
+    
+    float _coolDownTime;
+    int _launchForce, _damage;
+    private float _duration;
+    IWeaponControls _weaponInput;
+    
+    bool CanFire
     {
-        // Cache once; okay if null (e.g., kinematic ship)
-        _shipRb = GetComponentInParent<Rigidbody>();
-    }
-
-    void LateUpdate()
-    {
-        if (!_crosshair || !_muzzle) return;
-
-        Vector3 dirToTarget = _crosshair.position - _muzzle.position;
-        if (dirToTarget.sqrMagnitude < _deadZone) return;
-
-        Quaternion targetRotation = Quaternion.LookRotation(dirToTarget.normalized);
-        _muzzle.rotation = _smoothAim
-            ? Quaternion.RotateTowards(_muzzle.rotation, targetRotation, _turnSpeed * Time.deltaTime)
-            : targetRotation;
-    }
-
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
+        get
         {
-            FireProjectile();
-
+            _coolDown -= Time.deltaTime;
+            return _coolDown <= 0f;
         }
     }
+    
+    float _coolDown;
+    
+    // Update is called once per frame
+    void Update()
+    {
+        if (_weaponInput == null) return;
+        if (CanFire && _weaponInput.PrimaryFired)
+        {
+            FireProjectile();
+        } 
+    }
 
+    public void Init(IWeaponControls weaponInput, float coolDown, int launchForce, float duration, int damage)
+    {
+        Debug.Log($"Blaster.Init({weaponInput}, {coolDown}, launchForce, {duration}");
+        _weaponInput = weaponInput;
+        _coolDownTime = coolDown;
+        _launchForce = launchForce;
+        _duration = duration;
+        _damage = damage;
+    }
+    
     void FireProjectile()
     {
-        // Spawn aligned to the muzzle
+        _coolDown = _coolDownTime;
         Projectile projectile = Instantiate(_projectilePrefab, _muzzle.position, transform.rotation);
-
-        // Inherit the ship's current world velocity if available
-        // Vector3 inheritVel = _shipRb ? _shipRb.linearVelocity : Vector3.zero;
-
-        // Give the projectile the ship collider to ignore
-        // ShipController ship = GetComponentInParent<ShipController>();
-        // if (ship) projectile.SetShipCollider(ship.GetComponent<Collider>());
-
-        // Tell the projectile to launch with inherited velocity
-        // projectile.Launch(inheritVel);
+        projectile.gameObject.SetActive(false);
+        projectile.Init(_launchForce, _damage, _duration);
+        projectile.gameObject.SetActive(true);
     }
+
 }
