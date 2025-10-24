@@ -7789,6 +7789,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AsteroidField
       objectReference: {fileID: 0}
+    - target: {fileID: 4041349589614031293, guid: b2acc77eb0cc6674ebf31b43cc86b6d1, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4542342954331818554, guid: b2acc77eb0cc6674ebf31b43cc86b6d1, type: 3}
       propertyPath: m_LocalPosition.x
       value: 94.7

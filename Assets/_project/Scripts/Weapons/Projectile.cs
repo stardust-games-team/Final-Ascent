@@ -45,7 +45,7 @@ public class Projectile : MonoBehaviour
 
     public void Init(int launchForce, int damage, float range)
     {
-        Debug.Log($"Projectile({launchForce}, {damage}, {range}");
+        // Debug.Log($"Projectile({launchForce}, {damage}, {range}");
         _launchForce = launchForce;
         _damage = damage;
         _range = range;
@@ -53,7 +53,7 @@ public class Projectile : MonoBehaviour
     
     void OnCollisionEnter(Collision collision)
     {
-        Debug.Log(($"projectile collided with {collision.collider.name}"));
+        // Debug.Log(($"projectile collided with {collision.collider.name}"));
         IDamageable damageable = collision.collider.gameObject.GetComponent<IDamageable>();
         if (damageable != null)
         {

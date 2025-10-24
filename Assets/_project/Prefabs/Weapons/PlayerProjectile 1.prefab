@@ -95,7 +95,7 @@ TrailRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3206561499724962789}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -132,7 +132,7 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Time: 5
+  m_Time: 0.04
   m_PreviewTimeScale: 1
   m_Parameters:
     serializedVersion: 3
@@ -141,8 +141,8 @@ TrailRenderer:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0.12777478
-        value: 0.08108139
+        time: 0.18148571
+        value: 0.1136322
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -206,9 +206,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbe5eb7542b679d4ca87ccae1f90f359, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _launchForce: 10000
-  damage: 201
-  _range: 5
   _hitEffect: {fileID: 9093863551348339149, guid: 8b17ce19a6e07d9409e98d26ca802312, type: 3}
 --- !u!1 &5020494721480734234
 GameObject:
