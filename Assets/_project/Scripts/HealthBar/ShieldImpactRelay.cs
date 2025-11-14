@@ -13,8 +13,8 @@ public class ShieldImpactRelay : MonoBehaviour
     {
         // Find PlayerHealth up the hierarchy (Player root or Ship)
         _playerHealth = GetComponentInParent<PlayerHealth>();
-        if (_playerHealth == null)
-            Debug.LogWarning("ShieldImpactRelay: No PlayerHealth found in parents.");
+        // if (_playerHealth == null)
+        //     Debug.LogWarning("ShieldImpactRelay: No PlayerHealth found in parents.");
     }
 
     void OnCollisionEnter(Collision c)

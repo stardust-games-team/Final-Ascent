@@ -2,10 +2,14 @@ using UnityEngine;
 
 public class Blaster : MonoBehaviour
 {
-    [SerializeField] Projectile _projectilePrefab;
+    [SerializeField] Projectile _projectilePrefab, _weakProjectilePrefab;
 
     [SerializeField] Transform _muzzle;
-    
+
+    public float CapacitorChargePercentage => _capacitor / _maxCapacitor;
+    public float CoolDownPercent => Mathf.Clamp(_coolDown / _coolDownTime, 0f, 1f);
+
+    float _capacitor, _maxCapacitor, _costPerShot, _rechargeRate;
     float _coolDownTime;
     int _launchForce, _damage;
     float _coolDown;
@@ -26,6 +30,7 @@ public class Blaster : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        _capacitor = Mathf.Min(_maxCapacitor, _capacitor + (_rechargeRate * Time.deltaTime));
         if (_weaponInput == null) return;
         if (CanFire && _weaponInput.PrimaryFired)
         {
@@ -33,7 +38,16 @@ public class Blaster : MonoBehaviour
         } 
     }
 
-    public void Init(IWeaponControls weaponInput, float coolDown, int launchForce, float duration, int damage, Rigidbody rigidBody)
+    public void Init(
+        IWeaponControls weaponInput,
+        float coolDown, 
+        int launchForce, 
+        float duration, 
+        int damage, 
+        Rigidbody rigidBody,
+        float maxCapcitor = 1000f,
+        float costPerShot = 50f,
+        float rechargeRate = 20f)
     {
         // Debug.Log($"Blaster.Init({weaponInput}, {coolDown}, launchForce, {duration}");
         _weaponInput = weaponInput;
@@ -42,14 +56,19 @@ public class Blaster : MonoBehaviour
         _duration = duration;
         _damage = damage;
         _rigidBody = rigidBody;
+        _capacitor = _maxCapacitor = maxCapcitor;
+        _costPerShot = costPerShot;
+        _rechargeRate = rechargeRate;
     }
     
     void FireProjectile()
     {
         _coolDown = _coolDownTime;
-        Projectile projectile = Instantiate(_projectilePrefab, _muzzle.position, transform.rotation);
+        bool fullCharge = _capacitor >= _costPerShot;
+        _capacitor = Mathf.Max(_capacitor - _costPerShot, 0);
+        Projectile projectile = Instantiate(fullCharge? _projectilePrefab : _weakProjectilePrefab, _muzzle.position, transform.rotation);
         projectile.gameObject.SetActive(false);
-        projectile.Init(_launchForce, _damage, _duration, _rigidBody.linearVelocity, _rigidBody.angularVelocity);
+        projectile.Init(_launchForce, fullCharge ? _damage : (int)(_damage * 0.1f), _duration, _rigidBody.linearVelocity, _rigidBody.angularVelocity);
         projectile.gameObject.SetActive(true);
     }
 
