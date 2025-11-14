@@ -12,10 +12,11 @@ GameObject:
   - component: {fileID: 6800186172490311648}
   - component: {fileID: 1535476701466939808}
   - component: {fileID: 1243195070292145019}
+  - component: {fileID: 3558935696168329580}
   - component: {fileID: 736993867991698098}
   - component: {fileID: 3686111737458786924}
-  - component: {fileID: 3558935696168329580}
   - component: {fileID: 5918845458124389599}
+  - component: {fileID: 618021985199326111}
   m_Layer: 11
   m_Name: EnemyShield
   m_TagString: Untagged
@@ -113,41 +114,6 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &736993867991698098
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4361423509611894607}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d58b3bc0b5d7473d9cd161c18012504, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _flashColor: {r: 0.972549, g: 0.4984529, b: 0.37254903, a: 0.5254902}
-  _fadeOutTime: 0.5
-  _minIntensity: -10
-  _maxIntensity: 0
-  _maxHealth: 1000
-  _explosionPrefab: {fileID: 4597274207454981997, guid: 1e9c72805850e4e41948fea559f637c4, type: 3}
---- !u!114 &3686111737458786924
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4361423509611894607}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d1c365945fa74855a3e48c18092cf5f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damageLayers:
-    serializedVersion: 2
-    m_Bits: 6272
-  damage: 1
-  reactToTriggers: 1
 --- !u!54 &3558935696168329580
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -175,6 +141,40 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 2
+--- !u!114 &736993867991698098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4361423509611894607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d58b3bc0b5d7473d9cd161c18012504, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _damageHandler: {fileID: 618021985199326111}
+  _flashColor: {r: 0.972549, g: 0.4984529, b: 0.37254903, a: 0.5254902}
+  _fadeOutTime: 0.5
+  _minIntensity: -10
+  _maxIntensity: 0
+--- !u!114 &3686111737458786924
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4361423509611894607}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d1c365945fa74855a3e48c18092cf5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageLayers:
+    serializedVersion: 2
+    m_Bits: 6272
+  damage: 1
+  reactToTriggers: 1
 --- !u!114 &5918845458124389599
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -191,3 +191,16 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4224
   contactDamage: 10
+--- !u!114 &618021985199326111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4361423509611894607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea4d51ce969dfbc49ad3c78f8a72fa10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _explosionPrefab: {fileID: 4597274207454981997, guid: 1e9c72805850e4e41948fea559f637c4, type: 3}

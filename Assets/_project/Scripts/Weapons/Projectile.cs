@@ -43,12 +43,14 @@ public class Projectile : MonoBehaviour
         if (OutOfFuel) Destroy(gameObject);
     }
 
-    public void Init(int launchForce, int damage, float range)
+    public void Init(int launchForce, int damage, float range, Vector3 linearVelocity, Vector3 angularVelocity)
     {
         // Debug.Log($"Projectile({launchForce}, {damage}, {range}");
         _launchForce = launchForce;
         _damage = damage;
         _range = range;
+        _rigidBody.linearVelocity = linearVelocity;
+        _rigidBody.angularVelocity = angularVelocity;
     }
     
     void OnCollisionEnter(Collision collision)

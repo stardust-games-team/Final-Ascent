@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4542342954331818554}
   - component: {fileID: 6224473573716969044}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: AsteroidField
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44,12 +44,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 467998da07702bf41b2f3770de2cc8e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _asteroidCount: 500
-  _radius: 300
-  _maxScale: 5
+  _asteroidCount: 10000
+  _radius: 2000
+  _maxScale: 10
   _asteroidPrefabs:
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 3683374370768401479, guid: 4bc5d189ae8cf4a488b495acac8bd1f8, type: 3}
+  - {fileID: 2766985488887773830, guid: f8b7cd451e1672d4fb1ff46f3191e43d, type: 3}
   - {fileID: 3915015309390189125, guid: 567c334e43e7138478739da36d8f9f08, type: 3}
   - {fileID: 2777292016649111432, guid: 70657297337776d4087b7e03df96392f, type: 3}
   - {fileID: 1411368683043275160, guid: 792b756e57f29414caaa18e11314578f, type: 3}

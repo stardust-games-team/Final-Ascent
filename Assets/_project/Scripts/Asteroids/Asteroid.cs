@@ -24,8 +24,10 @@ public class Asteroid : MonoBehaviour, IDamageable
     {
         if (_fracturedAsteroidPrefab != null)
         {
-            Instantiate(_fracturedAsteroidPrefab, _transform.position, _transform.rotation);
+           FracturedAsteroid _fracturedAsteroid = Instantiate(_fracturedAsteroidPrefab, _transform.position, _transform.rotation);
+                   _fracturedAsteroid.transform.localScale = _transform.localScale;
         }
+
 
         if (_explosionPrefab != null)
         {

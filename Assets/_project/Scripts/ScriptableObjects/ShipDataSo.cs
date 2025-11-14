@@ -3,7 +3,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "ShipData", menuName = "3D Space Shooter/Ship Data", order = 1)]
 public class ShipDataSo : ScriptableObject
 {
-    [SerializeField] [Range(1000f, 10000f)]
+    [SerializeField] [Range(1000f, 50000f)]
     float _thrustForce = 7500f;
     [SerializeField] [Range(1000f, 10000f)]
     float _pitchForce = 6000f;
