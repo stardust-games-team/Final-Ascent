@@ -1,9 +1,10 @@
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class Blaster : MonoBehaviour
 {
     [SerializeField] Projectile _projectilePrefab, _weakProjectilePrefab;
-
+    [SerializeField] AudioClip _fireSound;
     [SerializeField] Transform _muzzle;
 
     public float CapacitorChargePercentage => _capacitor / _maxCapacitor;
@@ -16,6 +17,8 @@ public class Blaster : MonoBehaviour
     Rigidbody _rigidBody;
     float _duration;
     IWeaponControls _weaponInput;
+
+    AudioSource _audioSource;
     
     bool CanFire
     {
@@ -25,8 +28,13 @@ public class Blaster : MonoBehaviour
             return _coolDown <= 0f;
         }
     }
-    
-    
+
+    void Awake()
+    {
+        _audioSource = SoundManager.Configure3DAudioSource(GetComponent<AudioSource>());
+    }
+
+
     // Update is called once per frame
     void Update()
     {
@@ -63,6 +71,10 @@ public class Blaster : MonoBehaviour
     
     void FireProjectile()
     {
+        if (_fireSound)
+        {
+            _audioSource.PlayOneShot(_fireSound);
+        }
         _coolDown = _coolDownTime;
         bool fullCharge = _capacitor >= _costPerShot;
         _capacitor = Mathf.Max(_capacitor - _costPerShot, 0);

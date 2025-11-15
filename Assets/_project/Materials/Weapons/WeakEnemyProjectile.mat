@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: WeakPlayerProjectile
+  m_Name: WeakEnemyProjectile
   m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -115,8 +115,8 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 0.16470587, g: 0.51574856, b: 1, a: 0.8666667}
-    - _Color: {r: 0.16470584, g: 0.5157485, b: 1, a: 0.8666667}
+    - _BaseColor: {r: 0.6509434, g: 0.35411543, b: 0.16273585, a: 0.8666667}
+    - _Color: {r: 0.6509434, g: 0.3541154, b: 0.16273582, a: 0.8666667}
     - _EmissionColor: {r: 0.047169805, g: 2, b: 1.3529924, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []

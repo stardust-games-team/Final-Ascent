@@ -2,11 +2,14 @@ using System;
 using UnityEngine;
 using UnityEngine.Events;
 
+
+[RequireComponent(typeof(AudioSource))]
 public class MissileLauncher : MonoBehaviour
 {
     [SerializeField] GameObject _missilePrefab;
     [SerializeField] int _missiles = 4, _reloads = 2;
     [SerializeField] float _coolDown = 2f, _reloadTime = 60f;
+    [SerializeField] AudioClip _launchSound;
 
     public int MissileCapacity => _missiles;
     public int Missiles => _missilesRemaining;
@@ -16,10 +19,13 @@ public class MissileLauncher : MonoBehaviour
 
     public UnityEvent MissileFired, MissilesReloaded;
 
-    Transform _transform;
+    Transform _transform, _target;
     RadarScreen _radarScreen;
     int _missilesRemaining, _reloadsRemaining;
     float _fireDelay, _reloadDelay;
+    AudioSource _audioSource;
+    IWeaponControls _weaponInput;
+
 
     bool CanFire
     {
@@ -47,6 +53,7 @@ public class MissileLauncher : MonoBehaviour
         MissilesReloaded = new UnityEvent();
         _transform = transform;
         _radarScreen = FindFirstObjectByType<RadarScreen>();
+        _audioSource = SoundManager.Configure3DAudioSource(GetComponent<AudioSource>());
     }
 
     void OnEnable()
@@ -64,7 +71,7 @@ public class MissileLauncher : MonoBehaviour
             ReloadMissiles();
         }
 
-        if (CanFire && Input.GetMouseButtonDown(1))
+        if (CanFire && _weaponInput is {SecondaryFired: true})
         {
             FireMissile();
         }
@@ -72,10 +79,11 @@ public class MissileLauncher : MonoBehaviour
 
     void FireMissile()
     {
+        if (_launchSound) _audioSource.PlayOneShot(_launchSound);
         var missile = Instantiate(_missilePrefab, _transform.position, _transform.rotation).GetComponent<Missile>();
         if (_radarScreen)
         {
-            missile.Init(_radarScreen.LockedOnTarget);
+            missile.Init(_target ? _target : _radarScreen.LockedOnTarget);
         }
 
         missile.gameObject.SetActive(true);
@@ -92,5 +100,14 @@ public class MissileLauncher : MonoBehaviour
         _fireDelay = 0f;
         MissilesReloaded.Invoke();
     }
-    
+
+    public void Init(IWeaponControls weaponInput)
+    {
+        _weaponInput = weaponInput;
+    }
+
+    public void SetTarget(Transform target)
+    {
+        _target = target;
+    }
 }

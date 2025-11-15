@@ -2,21 +2,46 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance;
     bool ShouldQuitGame => Input.GetKeyUp(KeyCode.Escape);
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
+    void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+    }
     void Start()
     {
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = false;
     }
 
-    // Update is called once per frame
+    void OnEnable()
+    {
+        MusicManager.Instance.PlayPatrolMusic();
+    }
+
     void Update()
     {
         if (ShouldQuitGame)
         {
             QuitGame();
         }
+    }
+
+    public void InCombat (bool inCombat)
+    {
+        if (inCombat)
+        {
+            MusicManager.Instance.PlayCombatMusic();
+            return;
+        }
+
+        MusicManager.Instance.PlayPatrolMusic();
     }
 
     void QuitGame()

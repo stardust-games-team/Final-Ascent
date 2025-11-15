@@ -1,14 +1,15 @@
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 public class ShipController : MonoBehaviour
 {
     [SerializeField] Shield _shield;
-    [SerializeField] MovementControlsBase _movementControls;
+    [SerializeField]  protected MovementControlsBase _movementControls;
 
-    [SerializeField] WeaponControlsBase _weaponControls;
+    [SerializeField] protected WeaponControlsBase _weaponControls;
 
     
     [SerializeField] ShipDataSo _shipData;
@@ -16,10 +17,12 @@ public class ShipController : MonoBehaviour
     Rigidbody _rigidBody;
     [Range(-1f, 1f)]
     float _pitchAmount, _rollAmount, _yawAmount = 0f;
-    DamageHandler _damageHandler;
+    protected DamageHandler _damageHandler;
 
     [SerializeField] List<ShipEngine> _engines;
     [SerializeField] List<Blaster> _blasters;
+
+    [SerializeField] protected List<MissileLauncher> _missileLaunchers;
 
     IMovementControls MovementInput => _movementControls;
     IWeaponControls WeaponInput =>  _weaponControls;
@@ -43,6 +46,11 @@ public class ShipController : MonoBehaviour
              _shipData.BlasterProjectileDuration, _shipData.BlasterDamage, _rigidBody);
         }
 
+        foreach (MissileLauncher launcher in _missileLaunchers)
+        {
+            launcher.Init(WeaponInput);
+        }
+
         if (_shield)
         {
             _shield.Init(_shipData.ShieldStrength);
@@ -50,7 +58,7 @@ public class ShipController : MonoBehaviour
 
     }
 
-    void OnEnable()
+    public virtual void OnEnable()
     {
         if (_damageHandler == null) return;
         _damageHandler.Init(_shipData.MaxHealth);
@@ -60,7 +68,7 @@ public class ShipController : MonoBehaviour
 
 
 
-    void Update()
+    public virtual void Update()
     {
         _rollAmount = MovementInput.RollAmount;
         _yawAmount = MovementInput.YawAmount;
