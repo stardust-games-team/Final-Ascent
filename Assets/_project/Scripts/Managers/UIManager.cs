@@ -1,13 +1,16 @@
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
 public class UIManager : MonoBehaviour
-{
+{   
+    public static UIManager Instance;
+
     [SerializeField] TargetIndicator _targetIndicatorPrefab;
     [SerializeField] Canvas _mainCanvas;
-
-    public static UIManager Instance;
+    [SerializeField] TMP_Text _scoreText, _highScoreText;
+    [SerializeField] GameObject _gameOverScreen;
 
     List<TargetIndicator> _targetIndicators;
 
@@ -21,6 +24,21 @@ public class UIManager : MonoBehaviour
 
         Instance = this;
         _targetIndicators = new List<TargetIndicator>();
+    }
+
+    void OnEnable()
+    {
+        SubscribeToEvents();
+        _gameOverScreen.SetActive(false);
+    }
+
+    void OnDisable(){
+        UnsubscribeFromEvents();
+    }
+
+    void Start()
+    {
+        SubscribeToEvents();
     }
 
     public void AddTarget(Transform target)
@@ -48,5 +66,53 @@ public class UIManager : MonoBehaviour
             targetIndicator.gameObject.SetActive(targets.Any(target => target.GetInstanceID() == targetIndicator.Key));
             targetIndicator.LockedOn = targetIndicator.Key == lockedOnTarget;
         }
+    }
+
+    void SubscribeToEvents()
+    {
+        SubscribeToScoreManagerEvents();
+        SubscribeToGameManagerEvents();
+    }
+    
+     void UnsubscribeFromEvents()
+    {
+        UnsubscribeFromScoreManagerEvents();
+        UnsubscribeFromGameManagerEvents();
+    }
+    void SubscribeToGameManagerEvents()
+    {
+        GameManager.Instance.GameStateChanged += OnGameStateChanged;
+    }
+    void UnsubscribeFromGameManagerEvents()
+    {
+        GameManager.Instance.GameStateChanged -= OnGameStateChanged;
+    }
+    void SubscribeToScoreManagerEvents()
+    {
+        if (!ScoreManager.Instance) return;
+        UnsubscribeFromScoreManagerEvents();
+        ScoreManager.Instance.ScoreChanged += OnScoreChanged;
+        ScoreManager.Instance.HighScoreChanged += OnHighScoreChanged;
+
+    }
+    void UnsubscribeFromScoreManagerEvents()
+    {
+        if (!ScoreManager.Instance) return;
+        ScoreManager.Instance.ScoreChanged -= OnScoreChanged;
+        ScoreManager.Instance.HighScoreChanged -= OnHighScoreChanged;
+    }
+
+    void OnGameStateChanged(GameState gameState){
+        _gameOverScreen.SetActive(gameState == GameState.GameOver);
+    }
+
+    void OnScoreChanged(int score)
+    {
+        _scoreText.text = score.ToString();
+    }
+
+    void OnHighScoreChanged(int highScore)
+    {
+        _highScoreText.text = highScore.ToString();
     }
 }

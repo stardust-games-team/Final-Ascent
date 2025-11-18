@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4537086352057701057}
   - component: {fileID: 1078030904884134967}
   - component: {fileID: -5512432149558224587}
+  - component: {fileID: 3248973443896808874}
   m_Layer: 12
   m_Name: Rock1
   m_TagString: Untagged
@@ -152,3 +153,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _fracturedAsteroidPrefab: {fileID: -687319230973074434, guid: d54d60b4c05fdc343b27b2dced860613, type: 3}
   _explosionPrefab: {fileID: 11400008, guid: f2390b3a71248784e8b521a464a0c6a5, type: 3}
+--- !u!114 &3248973443896808874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3683374370768401479}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aeb3cb4f3f0834edda893ce4f0359885, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -1,9 +1,17 @@
 using UnityEngine;
+using System;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
+
+    public event Action<GameState> GameStateChanged = delegate(GameState state){};
+    
+    public GameState GameState { get; private set; }
+    
     bool ShouldQuitGame => Input.GetKeyUp(KeyCode.Escape);
+
+    
 
     void Awake()
     {
@@ -20,9 +28,17 @@ public class GameManager : MonoBehaviour
         Cursor.visible = false;
     }
 
+    void SetGameState(GameState gameState)
+    {
+        if (gameState == GameState) return;
+        GameState = gameState;
+        GameStateChanged(gameState);
+    }
+
     void OnEnable()
     {
-        MusicManager.Instance.PlayPatrolMusic();
+        SetGameState(GameState.Patrol);
+        //MusicManager.Instance.PlayPatrolMusic();
     }
 
     void Update()
@@ -35,13 +51,23 @@ public class GameManager : MonoBehaviour
 
     public void InCombat (bool inCombat)
     {
+        if(GameState == GameState.Combat) return;
         if (inCombat)
         {
             MusicManager.Instance.PlayCombatMusic();
+            SetGameState(GameState.Combat);
             return;
         }
 
         MusicManager.Instance.PlayPatrolMusic();
+    }
+
+
+    public void PlayerWon()
+    {
+        MusicManager.Instance.PlayGameOverMusic();
+        SetGameState(GameState.GameOver);
+        print("WON");
     }
 
     void QuitGame()

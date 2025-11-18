@@ -28,6 +28,7 @@ public class EnemyShipController : ShipController
     GameObject _tempTarget;   // new: keeps track of temporary targets
 
     public UnityEvent<int> ShipDestroyed = new UnityEvent<int>();
+    bool _destroyed;
 
     #region Public data for debugging
     public string ShipState => _state.ToString();
@@ -70,12 +71,22 @@ public class EnemyShipController : ShipController
     }
 
     void OnDisable()
-    {
-        ShipDestroyed.Invoke(GetInstanceID());
-    }
+{
+    // If game is ending, ignore this event
+    if (GameManager.Instance != null &&
+        GameManager.Instance.GameState == GameState.GameOver)
+        return;
+
+    // If this was not caused by actual destruction, ignore
+    if (!_destroyed) return;
+
+    ShipDestroyed.Invoke(gameObject.GetInstanceID());
+}
+
 
     public override void Update()
     {
+        if(_destroyed) return;
         EnemyShipState next = GetNextState();
         if (next != _state)
             SetState(next);
@@ -85,7 +96,8 @@ public class EnemyShipController : ShipController
 
     EnemyShipState GetNextState()
     {
-        return _state switch
+        if(_destroyed) return EnemyShipState.None;
+        EnemyShipState newState = _state switch
         {
             EnemyShipState.Patrol => Patrol(),
             EnemyShipState.Attack => Attack(),
@@ -93,6 +105,7 @@ public class EnemyShipController : ShipController
             EnemyShipState.Retreat => Retreat(),
             _ => EnemyShipState.None
         };
+        return newState;
     }
 
     // ----------------- STATE LOGIC -----------------
