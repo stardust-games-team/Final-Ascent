@@ -1,14 +1,33 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ScoreManager : MonoBehaviour
 {
     public static ScoreManager Instance;
-    public event Action<int> ScoreChanged = delegate(int i){ };
-    public event Action<int> HighScoreChanged = delegate(int i){ };
+    public event Action<int> ScoreChanged = delegate { };
+    public event Action<int> HighScoreChanged = delegate { };
 
     public int Score { get; private set; }
     public int HighScore { get; private set; }
+
+    static Queue<int> _pendingPoints = new Queue<int>();
+
+    void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+
+        // Process any points that were queued before ScoreManager existed
+        while (_pendingPoints.Count > 0)
+        {
+            AddPoints(_pendingPoints.Dequeue());
+        }
+    }
 
     public void ResetScore()
     {
@@ -20,18 +39,17 @@ public class ScoreManager : MonoBehaviour
     {
         Score += points;
         ScoreChanged(Score);
-        if (Score <= HighScore) return;
-        HighScore = Score;
-        HighScoreChanged(HighScore);
+
+        if (Score > HighScore)
+        {
+            HighScore = Score;
+            HighScoreChanged(HighScore);
+        }
     }
 
-
-    void Awake(){
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
+    // Called by AddPointsWhenDestroyed if ScoreManager isn't ready yet
+    public static void QueuePoints(int points)
+    {
+        _pendingPoints.Enqueue(points);
     }
 }

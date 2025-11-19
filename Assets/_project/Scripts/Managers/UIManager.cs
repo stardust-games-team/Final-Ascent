@@ -29,20 +29,25 @@ public class UIManager : MonoBehaviour
     void OnEnable()
     {
         SubscribeToEvents();
-        _gameOverScreen.SetActive(false);
+        if (_gameOverScreen != null)
+            _gameOverScreen.SetActive(false);
     }
 
-    void OnDisable(){
+    void OnDisable()
+    {
         UnsubscribeFromEvents();
     }
 
     void Start()
     {
+        // Subscribe again in Start to catch managers that weren't ready in OnEnable
         SubscribeToEvents();
     }
 
     public void AddTarget(Transform target)
     {
+        if (_targetIndicatorPrefab == null || _mainCanvas == null) return;
+        
         var targetIndicator = Instantiate(_targetIndicatorPrefab, _mainCanvas.transform);
         targetIndicator.Init(target, _mainCanvas);
         _targetIndicators.Add(targetIndicator);
@@ -50,8 +55,10 @@ public class UIManager : MonoBehaviour
 
     public void RemoveTarget(Transform target)
     {
+        if (target == null) return;
+        
         var key = target.GetInstanceID();
-        var indicator = _targetIndicators.FirstOrDefault(i => i.Key == key);
+        var indicator = _targetIndicators.FirstOrDefault(i => i != null && i.Key == key);
         if (indicator) 
         {
             _targetIndicators.Remove(indicator);
@@ -61,9 +68,16 @@ public class UIManager : MonoBehaviour
 
     public void UpdateTargetIndicators(List<Transform> targets, int lockedOnTarget)
     {
+        if (targets == null) return;
+        
+        // Clean up any null indicators first
+        _targetIndicators.RemoveAll(i => i == null);
+        
         foreach (var targetIndicator in _targetIndicators)
         {
-            targetIndicator.gameObject.SetActive(targets.Any(target => target.GetInstanceID() == targetIndicator.Key));
+            if (targetIndicator == null) continue;
+            
+            targetIndicator.gameObject.SetActive(targets.Any(target => target != null && target.GetInstanceID() == targetIndicator.Key));
             targetIndicator.LockedOn = targetIndicator.Key == lockedOnTarget;
         }
     }
@@ -74,45 +88,68 @@ public class UIManager : MonoBehaviour
         SubscribeToGameManagerEvents();
     }
     
-     void UnsubscribeFromEvents()
+    void UnsubscribeFromEvents()
     {
         UnsubscribeFromScoreManagerEvents();
         UnsubscribeFromGameManagerEvents();
     }
+    
     void SubscribeToGameManagerEvents()
     {
+        // Check if GameManager exists before subscribing
+        if (GameManager.Instance == null)
+        {
+            Debug.LogWarning("GameManager.Instance is null in SubscribeToGameManagerEvents - skipping subscription");
+            return;
+        }
+        
+        // Unsubscribe first to prevent duplicate subscriptions
+        UnsubscribeFromGameManagerEvents();
         GameManager.Instance.GameStateChanged += OnGameStateChanged;
     }
+    
     void UnsubscribeFromGameManagerEvents()
     {
+        // Check if GameManager exists before unsubscribing
+        if (GameManager.Instance == null) return;
+        
         GameManager.Instance.GameStateChanged -= OnGameStateChanged;
     }
+    
     void SubscribeToScoreManagerEvents()
     {
-        if (!ScoreManager.Instance) return;
+        if (ScoreManager.Instance == null) return;
+        
+        // Unsubscribe first to prevent duplicate subscriptions
         UnsubscribeFromScoreManagerEvents();
+        
         ScoreManager.Instance.ScoreChanged += OnScoreChanged;
         ScoreManager.Instance.HighScoreChanged += OnHighScoreChanged;
-
     }
+    
     void UnsubscribeFromScoreManagerEvents()
     {
-        if (!ScoreManager.Instance) return;
+        if (ScoreManager.Instance == null) return;
+        
         ScoreManager.Instance.ScoreChanged -= OnScoreChanged;
         ScoreManager.Instance.HighScoreChanged -= OnHighScoreChanged;
     }
 
-    void OnGameStateChanged(GameState gameState){
-        _gameOverScreen.SetActive(gameState == GameState.GameOver);
+    void OnGameStateChanged(GameState gameState)
+    {
+        if (_gameOverScreen != null)
+            _gameOverScreen.SetActive(gameState == GameState.GameOver);
     }
 
     void OnScoreChanged(int score)
     {
-        _scoreText.text = score.ToString();
+        if (_scoreText != null)
+            _scoreText.text = score.ToString();
     }
 
     void OnHighScoreChanged(int highScore)
     {
-        _highScoreText.text = highScore.ToString();
+        if (_highScoreText != null)
+            _highScoreText.text = highScore.ToString();
     }
 }

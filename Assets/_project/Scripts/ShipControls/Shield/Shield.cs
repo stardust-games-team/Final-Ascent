@@ -7,6 +7,7 @@ using UnityEngine;
 public class Shield : MonoBehaviour
 {
     [SerializeField] DamageHandler _damageHandler;
+    
 
     [SerializeField] Color _flashColor = Color.white;
     [SerializeField] [Range(0.25f, 1f)] private float _fadeOutTime = 0.5f;

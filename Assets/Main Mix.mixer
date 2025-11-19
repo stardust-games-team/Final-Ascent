@@ -64,6 +64,7 @@ AudioMixerSnapshotController:
   m_FloatValues:
     63c5cc905a6abfb45b68738277e44e4c: -80
     23797a665ec2d614e94a98113fa5167f: -10.345207
+    7d5a4878dd0854ffcabd9d74a9ddc453: -80
     68fc4cbdc6061614c866ccae10e71669: -4.560346
   m_TransitionOverrides: {}
 --- !u!241 &24100000
@@ -78,6 +79,7 @@ AudioMixerController:
   m_Snapshots:
   - {fileID: 24500006}
   - {fileID: -792323131724322845}
+  - {fileID: 6251848296919013901}
   m_StartSnapshot: {fileID: 24500006}
   m_SuspendThreshold: -80
   m_EnableSuspend: 1
@@ -89,9 +91,10 @@ AudioMixerController:
     - 3773ee048ec2025469cc2150ec9f69ba
     - a0f89fe503a307e4ab0fdd094331abf3
     - 5c913a4b9b5af58469e111c53d9ba576
+    - 22f40864414a049498b5dabb6d204c78
     name: View
   m_CurrentViewIndex: 0
-  m_TargetSnapshot: {fileID: -792323131724322845}
+  m_TargetSnapshot: {fileID: 6251848296919013901}
 --- !u!243 &24300002
 AudioMixerGroupController:
   m_ObjectHideFlags: 0
@@ -105,6 +108,7 @@ AudioMixerGroupController:
   - {fileID: -8723454928374650565}
   - {fileID: 4964317802521870986}
   - {fileID: -8706883752036673328}
+  - {fileID: 3130111297457829633}
   m_Volume: 9d6de1c9d77adcf4f83d97d02a6da5da
   m_Pitch: 89687f474273e5a46bd39fb72021eaad
   m_Send: 00000000000000000000000000000000
@@ -140,8 +144,42 @@ AudioMixerSnapshotController:
   m_FloatValues:
     63c5cc905a6abfb45b68738277e44e4c: -4.9356413
     23797a665ec2d614e94a98113fa5167f: -9.833286
+    7d5a4878dd0854ffcabd9d74a9ddc453: -80
     68fc4cbdc6061614c866ccae10e71669: -80
   m_TransitionOverrides: {}
+--- !u!244 &1550477308793631962
+AudioMixerEffectController:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_EffectID: f4fa34fe7d6aa4322a24314536448ed6
+  m_EffectName: Attenuation
+  m_MixLevel: ff0ae9a70c460456ebacc6e21a1bf064
+  m_Parameters: []
+  m_SendTarget: {fileID: 0}
+  m_EnableWetMix: 0
+  m_Bypass: 0
+--- !u!243 &3130111297457829633
+AudioMixerGroupController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: GameOver
+  m_AudioMixer: {fileID: 24100000}
+  m_GroupID: 22f40864414a049498b5dabb6d204c78
+  m_Children: []
+  m_Volume: 7d5a4878dd0854ffcabd9d74a9ddc453
+  m_Pitch: 7c001328bb1d84958be7c9f964942afa
+  m_Send: 00000000000000000000000000000000
+  m_Effects:
+  - {fileID: 1550477308793631962}
+  m_UserColorIndex: 0
+  m_Mute: 0
+  m_Solo: 0
+  m_BypassEffects: 0
 --- !u!243 &4964317802521870986
 AudioMixerGroupController:
   m_ObjectHideFlags: 0
@@ -175,6 +213,21 @@ AudioMixerEffectController:
   m_SendTarget: {fileID: 0}
   m_EnableWetMix: 0
   m_Bypass: 0
+--- !u!245 &6251848296919013901
+AudioMixerSnapshotController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: GameOver Snapshot
+  m_AudioMixer: {fileID: 24100000}
+  m_SnapshotID: 6c0c6cc01953d4ca985b3705502d9b11
+  m_FloatValues:
+    63c5cc905a6abfb45b68738277e44e4c: -80
+    23797a665ec2d614e94a98113fa5167f: -79.700005
+    7d5a4878dd0854ffcabd9d74a9ddc453: -5.3230715
+    68fc4cbdc6061614c866ccae10e71669: -80
+  m_TransitionOverrides: {}
 --- !u!244 &9209063556895142981
 AudioMixerEffectController:
   m_ObjectHideFlags: 3

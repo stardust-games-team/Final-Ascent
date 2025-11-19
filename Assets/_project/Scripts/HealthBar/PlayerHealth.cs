@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(DamageHandler))]
 public class PlayerHealth : MonoBehaviour
 {
     [Header("Shield (instant)")]
@@ -8,7 +9,7 @@ public class PlayerHealth : MonoBehaviour
     public Image shieldBar;
 
     [Header("Health (chip effect)")]
-    public float maxHealth = 100f;
+    public int maxHealth = 500;               
     public float chipSpeed = 2f;
     public Image frontHealthBar;
     public Image backHealthBar;
@@ -17,103 +18,164 @@ public class PlayerHealth : MonoBehaviour
     public LayerMask damageLayers;
     public float contactDamage = 10f;
 
-    // NEW: which scene object to remove + when
     [Header("Shield Removal")]
-    public GameObject shieldObject;                 // assign the Shield prefab instance in scene
-    public bool removeOnShieldDepleted = true;      // remove when shield reaches 0
-    public bool removeOnHealthDepleted = false;     // or remove when health reaches 0 instead
-    public bool destroyInsteadOfDisable = false;    // tick to Destroy(); untick to SetActive(false)
-    bool _shieldRemoved;                            // ensures it only happens once
+    public GameObject shieldObject;
+    public bool removeOnShieldDepleted = true;
+    public bool removeOnHealthDepleted = false;
+    public bool destroyInsteadOfDisable = false;
+    bool _shieldRemoved;
 
-    float shield, health;
+    [Header("Game Over Panel")]
+    public GameObject gameOverPanel;
+
+    // internal
+    float shield;
     float healthLerpTimer;
+    bool _playerDead = false;
+
+    DamageHandler _damageHandler;
+
+    void Awake()
+    {
+        // Ensure DamageHandler exists
+        _damageHandler = GetComponent<DamageHandler>();
+        if (_damageHandler == null)
+            _damageHandler = gameObject.AddComponent<DamageHandler>();
+
+        // Initialize health
+        _damageHandler.Init(maxHealth);
+    }
+
+    void OnEnable()
+    {
+        _damageHandler.HealthChanged.AddListener(OnHealthChanged);
+        _damageHandler.ObjectDestroyed.AddListener(OnPlayerDestroyed);
+    }
+
+    void OnDisable()
+    {
+        if (_damageHandler != null)
+        {
+            _damageHandler.HealthChanged.RemoveListener(OnHealthChanged);
+            _damageHandler.ObjectDestroyed.RemoveListener(OnPlayerDestroyed);
+        }
+    }
 
     void Start()
     {
         shield = maxShield;
-        health = maxHealth;
-
         if (shieldBar) shieldBar.fillAmount = 1f;
         if (frontHealthBar) frontHealthBar.fillAmount = 1f;
         if (backHealthBar) backHealthBar.fillAmount = 1f;
+        if (gameOverPanel) gameOverPanel.SetActive(false);
     }
 
     void Update()
     {
+        // clamp shield
         shield = Mathf.Clamp(shield, 0f, maxShield);
-        health = Mathf.Clamp(health, 0f, maxHealth);
-
-        UpdateUI();
+        // UI updates handled by events
     }
 
-    void UpdateUI()
+    // Event called when DamageHandler.HealthChanged is triggered
+    void OnHealthChanged()
     {
-        if (shieldBar) shieldBar.fillAmount = maxShield > 0f ? shield / maxShield : 0f;
+        int current = _damageHandler.Health;
+        int max = _damageHandler.MaxHealth;
+
+        float target = max > 0 ? (float)current / max : 0f;
 
         if (frontHealthBar && backHealthBar)
-        {
-            float hTarget = maxHealth > 0f ? health / maxHealth : 0f;
-            UpdateChipBar(frontHealthBar, backHealthBar, ref healthLerpTimer, hTarget, chipSpeed);
-        }
+            UpdateChipBar(frontHealthBar, backHealthBar, ref healthLerpTimer, target, chipSpeed);
 
-        // NEW: check removal conditions every frame (safe if TakeDamage isn't the only changer)
-        TryRemoveShieldIfNeeded();
+        if (!_playerDead && current <= 0)
+            HandleDeath();
+    }
+
+    void OnPlayerDestroyed()
+    {
+        if (!_playerDead)
+            HandleDeath();
+    }
+
+    void HandleDeath()
+    {
+        _playerDead = true;
+
+        // Show Game Over UI
+        if (gameOverPanel) gameOverPanel.SetActive(true);
+
+        // Notify GameManager
+        if (GameManager.Instance != null)
+            GameManager.Instance.PlayerLost();
+
+        // Detach camera so it isn't destroyed
+        Camera mainCam = Camera.main;
+        if (mainCam != null && mainCam.transform.IsChildOf(transform))
+            mainCam.transform.parent = null;
+
+        // Disable all other scripts except this one
+        foreach (var comp in GetComponents<MonoBehaviour>())
+            if (comp != this) comp.enabled = false;
+
+        // Disable visuals/colliders
+        foreach (var renderer in GetComponentsInChildren<Renderer>())
+            renderer.enabled = false;
+        foreach (var collider in GetComponentsInChildren<Collider>())
+            collider.enabled = false;
+
+        Debug.Log("Player died -> Game Over. Camera detached.");
     }
 
     void UpdateChipBar(Image front, Image back, ref float timer, float targetFill, float seconds)
     {
-        float f = front.fillAmount, b = back.fillAmount;
+        float f = front.fillAmount;
+        float b = back.fillAmount;
 
-        if (b > targetFill) { // damage
+        if (b > targetFill)
+        {
             front.fillAmount = targetFill;
             back.color = Color.red;
             timer += Time.deltaTime;
-            float t = Mathf.Clamp01(seconds > 0f ? timer / seconds : 1f); t *= t;
+            float t = Mathf.Clamp01(seconds > 0f ? timer / seconds : 1f);
+            t *= t;
             back.fillAmount = Mathf.Lerp(b, targetFill, t);
-        } else if (f < targetFill) { // heal
-            back.fillAmount = targetFill; back.color = Color.green;
+        }
+        else if (f < targetFill)
+        {
+            back.fillAmount = targetFill;
+            back.color = Color.green;
             timer += Time.deltaTime;
-            float t = Mathf.Clamp01(seconds > 0f ? timer / seconds : 1f); t *= t;
+            float t = Mathf.Clamp01(seconds > 0f ? timer / seconds : 1f);
+            t *= t;
             front.fillAmount = Mathf.Lerp(f, targetFill, t);
-        } else {
+        }
+        else
+        {
             timer = 0f;
         }
     }
 
     public void TakeDamage(float amount)
     {
-        if (amount <= 0f) return;
+        if (_playerDead || amount <= 0f) return;
 
         float remaining = amount;
 
-        // health first (chip)
-        if (health > 0f) {
-            float taken = Mathf.Min(health, remaining);
-            health -= taken; remaining -= taken;
-            healthLerpTimer = 0f;
+        // DamageHandler handles integer health
+        int damageToHealth = Mathf.FloorToInt(remaining);
+        if (damageToHealth > 0)
+        {
+            _damageHandler.TakeDamage(damageToHealth, transform.position);
+            remaining -= damageToHealth;
         }
-        // overflow hits shield (instant)
-        if (remaining > 0f) {
+
+        // Overflow hits shield instantly
+        if (remaining > 0f)
+        {
             shield = Mathf.Max(0f, shield - remaining);
+            if (shieldBar) shieldBar.fillAmount = maxShield > 0f ? shield / maxShield : 0f;
         }
-
-        UpdateUI();
-        // TryRemoveShieldIfNeeded(); // also called in UpdateUI; calling here too is fine
-    }
-
-    public void RestoreHealth(float amount)
-    {
-        if (amount <= 0f) return;
-        health = Mathf.Min(maxHealth, amount + health);
-        healthLerpTimer = 0f;
-        UpdateUI();
-    }
-
-    public void RestoreShield(float amount)
-    {
-        if (amount <= 0f) return;
-        shield = Mathf.Min(maxShield, amount + shield);
-        UpdateUI();
     }
 
     void OnCollisionEnter(Collision c)
@@ -128,14 +190,13 @@ public class PlayerHealth : MonoBehaviour
             TakeDamage(contactDamage);
     }
 
-    // NEW: one-shot removal
     void TryRemoveShieldIfNeeded()
     {
         if (_shieldRemoved || shieldObject == null) return;
 
         bool shouldRemove =
             (removeOnShieldDepleted && shield <= 0f) ||
-            (removeOnHealthDepleted && health <= 0f);
+            (removeOnHealthDepleted && _damageHandler != null && _damageHandler.Health <= 0);
 
         if (shouldRemove)
         {
@@ -144,14 +205,4 @@ public class PlayerHealth : MonoBehaviour
             else shieldObject.SetActive(false);
         }
     }
-
-    /* previous shield-first overflow kept (commented) if you ever want to flip back:
-    public void TakeDamage(float amount)
-    {
-        float remaining = amount;
-        if (shield > 0f) { var absorbed = Mathf.Min(shield, remaining); shield -= absorbed; remaining -= absorbed; }
-        if (remaining > 0f) { health = Mathf.Max(0f, health - remaining); healthLerpTimer = 0f; }
-        UpdateUI();
-    }
-    */
 }

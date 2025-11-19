@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class RadarScreen : MonoBehaviour
@@ -42,6 +41,7 @@ public class RadarScreen : MonoBehaviour
     void Awake()
     {
         if (!_radarScreen) return;
+
         _targetsInRange = new List<Transform>();
         _radarTransform = _radarScreen.transform;
         _radarRenderer = _radarScreen.GetComponent<Renderer>();
@@ -59,8 +59,7 @@ public class RadarScreen : MonoBehaviour
     void Start()
     {
         if (!_radarRenderer) return;
-        var bounds = _radarRenderer.bounds;
-        _radarWidth = bounds.size.x;
+        _radarWidth = _radarRenderer.bounds.size.x;
     }
 
     void OnEnable()
@@ -75,36 +74,56 @@ public class RadarScreen : MonoBehaviour
 
     void LateUpdate()
     {
+        if (GameManager.Instance.GameState == GameState.GameOver) return;
+
+        // Remove destroyed targets
+        _targetsInRange = _targetsInRange.Where(t => t != null).ToList();
+
         DrawTargetBlips();
-        UIManager.Instance.UpdateTargetIndicators(_targetsInRange, LockedOnTarget ? LockedOnTarget.GetInstanceID() : -1);
+
+        UIManager.Instance.UpdateTargetIndicators(
+            _targetsInRange,
+            LockedOnTarget != null ? LockedOnTarget.GetInstanceID() : -1
+        );
+
+        // Manage combat state
         if (TargetsInRange > 0)
         {
-            if (InCombat) return;
-            InCombat = true;
-            GameManager.Instance.InCombat(true);
-            return;
+            if (!InCombat)
+            {
+                InCombat = true;
+                GameManager.Instance.InCombat(true);
+            }
         }
-
-        if (!InCombat) return;
-
-        InCombat = false;
-        GameManager.Instance.InCombat(false);
+        else
+        {
+            if (InCombat)
+            {
+                InCombat = false;
+                GameManager.Instance.InCombat(false);
+            }
+        }
     }
 
     IEnumerator RefreshTargetList()
     {
-        int size = 0;
         while (true)
         {
+            if (GameManager.Instance != null && GameManager.Instance.GameState == GameState.GameOver)
+                yield break;
+
             _targetsInRange.Clear();
             LockedOnTarget = null;
             float closest = _lockOnRange;
-            var myPosition = _transform.position;
-            size = Physics.OverlapSphereNonAlloc(_transform.position, _radarRange, _targetColliders, _layerMask);
+            Vector3 myPosition = _transform.position;
+
+            int size = Physics.OverlapSphereNonAlloc(_transform.position, _radarRange, _targetColliders, _layerMask);
             for (int i = 0; i < size; ++i)
             {
-                var target = GetRootTransform(i);
-                if (!target.gameObject.activeSelf) continue;
+                Transform target = GetRootTransform(i);
+
+                // skip destroyed or inactive targets
+                if (target == null || !target.gameObject.activeSelf) continue;
 
                 closest = TryLockOnTarget(target, myPosition, closest);
 
@@ -113,16 +132,18 @@ public class RadarScreen : MonoBehaviour
                     _targetsInRange.Add(target);
                 }
             }
+
             yield return _waitForSeconds;
         }
     }
 
     float TryLockOnTarget(Transform target, Vector3 myPosition, float closest)
     {
-        var targetPosition = target.position;
-        var distance = Vector3.Distance(targetPosition, myPosition);
-        var direction = targetPosition - myPosition;
-        var angle = Vector3.Angle(direction, _transform.forward);
+        Vector3 targetPosition = target.position;
+        float distance = Vector3.Distance(targetPosition, myPosition);
+        Vector3 direction = targetPosition - myPosition;
+        float angle = Vector3.Angle(direction, _transform.forward);
+
         if (distance < closest && angle < _lockedOnRadius)
         {
             closest = distance;
@@ -133,26 +154,32 @@ public class RadarScreen : MonoBehaviour
     }
 
     void DrawTargetBlips()
-    {
-        ClearDisplay();
+{
+    if (_radarTransform == null || _targetsInRange == null) return;
 
-        foreach (var target in _targetsInRange)
-        {
-            _targetPosition = (target.position - _player.position) / _radarRange;
-            CalculateBlipPosition();
-            var blip = Instantiate(_blipPrefab, _radarTransform);
-            blip.transform.localScale = _blipPrefab.transform.localScale;
-            blip.transform.localPosition = _blipPosition;
-            DrawHeightLines(blip);
-        }
+    ClearDisplay();
+
+    foreach (var target in _targetsInRange.ToList()) // ToList() to safely modify list
+    {
+        if (target == null) continue; // skip destroyed targets
+        _targetPosition = (target.position - _player.position) / _radarRange;
+        CalculateBlipPosition();
+        var blip = Instantiate(_blipPrefab, _radarTransform);
+        blip.transform.localScale = _blipPrefab.transform.localScale;
+        blip.transform.localPosition = _blipPosition;
+        DrawHeightLines(blip);
     }
+}
+
 
     void DrawHeightLines(GameObject blip)
     {
         if (Mathf.Approximately(0f, _pitch)) return;
+
         RadarBlip radarBlip = blip.GetComponent<RadarBlip>();
         radarBlip.LineAbove.SetActive(_pitch < 0f);
         radarBlip.LineBelow.SetActive(_pitch > 0f);
+
         Vector3 scale;
         if (_pitch < 0f)
         {
@@ -160,7 +187,6 @@ public class RadarScreen : MonoBehaviour
             scale.y = Mathf.Clamp(Mathf.Abs(_pitch) / 90f, 0f, 1f);
             radarBlip.LineAbove.transform.localScale = scale;
         }
-
         else if (_pitch > 0f)
         {
             scale = radarBlip.LineBelow.transform.localScale;
@@ -180,35 +206,45 @@ public class RadarScreen : MonoBehaviour
         _angleRadians = _radarAngle * Mathf.Deg2Rad;
         _blipX = _normalizedDistance * Mathf.Cos(_angleRadians);
         _blipY = _normalizedDistance * Mathf.Sin(_angleRadians);
+
         _blipPosition.x = _blipX * (_radarWidth * 0.25f);
         _blipPosition.y = _blipY * (_radarWidth * 0.25f) * -1f;
-        if (_player.localEulerAngles.z is < 270f and > 90f)
-        {
+
+        if (_player.localEulerAngles.z < 270f && _player.localEulerAngles.z > 90f)
             _blipPosition.x *= -1f;
-        }
 
         _blipPosition.z = -0.01f;
     }
 
-    void ClearDisplay()
+void ClearDisplay()
+{
+    if (_radarTransform == null) return; // <-- check the transform itself
+
+    for (int i = _radarTransform.childCount - 1; i >= 0; i--)
     {
-        while (_radarTransform.childCount > 0)
+        Transform child = _radarTransform.GetChild(i);
+        if (child != null) // Unity's null check handles destroyed objects
         {
-            var child = _radarTransform.GetChild(0);
             child.SetParent(null);
             Destroy(child.gameObject);
         }
     }
+}
+
+
+
 
     Transform GetRootTransform(int i)
     {
-        Transform root = _targetColliders[i].transform;
+        Transform root = _targetColliders[i]?.transform;
+        if (root == null) return null;
+
         int layer = root.gameObject.layer;
-        while (root.parent && layer == root.parent.gameObject.layer)
+        while (root.parent != null && layer == root.parent.gameObject.layer)
         {
             root = root.parent;
         }
-        
+
         return root;
     }
 }

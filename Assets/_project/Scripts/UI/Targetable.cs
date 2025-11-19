@@ -4,7 +4,11 @@ public class Targetable : MonoBehaviour
 {
     void OnEnable()
     {
-        UIManager.Instance.AddTarget(transform);
+        // Check if UIManager exists before trying to add target
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.AddTarget(transform);
+        }
     }
 
     void OnDisable()
@@ -19,6 +23,10 @@ public class Targetable : MonoBehaviour
 
     void RemoveTarget()
     {
-        UIManager.Instance.RemoveTarget(transform);
+        // Check if UIManager exists before trying to remove target
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.RemoveTarget(transform);
+        }
     }
 }

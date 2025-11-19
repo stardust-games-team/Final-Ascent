@@ -316,14 +316,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1008554965124534644}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6186857f554a04440ac4cf9437274d28, type: 3}
+  m_Script: {fileID: 11500000, guid: b4c7bd78f565048989204b69c562c57f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ship: {fileID: 4909462377842622118}
+  ship: {fileID: 0}
   cam: {fileID: 0}
-  forwardDistance: 5
-  maxOffsetX: 10
-  maxOffsetY: 10
+  forwardDistance: 10
+  maxOffsetX: 4
+  maxOffsetY: 3
   parentedToShip: 0
   moveSpeed: 8
   recenterWhenNoInput: 0
@@ -1252,22 +1252,6 @@ PrefabInstance:
       value: Blaster (1)
       objectReference: {fileID: 0}
     - target: {fileID: 4813205879603594, guid: b6362f50ca5d7b145ba56bc6c23080ee, type: 3}
-      propertyPath: m_RootOrder
-      value: 14
-      objectReference: {fileID: 0}
-    - target: {fileID: 4813205879603594, guid: b6362f50ca5d7b145ba56bc6c23080ee, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1.54
-      objectReference: {fileID: 0}
-    - target: {fileID: 4813205879603594, guid: b6362f50ca5d7b145ba56bc6c23080ee, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1.54
-      objectReference: {fileID: 0}
-    - target: {fileID: 4813205879603594, guid: b6362f50ca5d7b145ba56bc6c23080ee, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1.54
-      objectReference: {fileID: 0}
-    - target: {fileID: 4813205879603594, guid: b6362f50ca5d7b145ba56bc6c23080ee, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.6
       objectReference: {fileID: 0}
@@ -1295,39 +1279,31 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0.00000017881395
       objectReference: {fileID: 0}
+    - target: {fileID: 4813205879603594, guid: b6362f50ca5d7b145ba56bc6c23080ee, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4813205879603594, guid: b6362f50ca5d7b145ba56bc6c23080ee, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4813205879603594, guid: b6362f50ca5d7b145ba56bc6c23080ee, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 35217099990509625, guid: b6362f50ca5d7b145ba56bc6c23080ee, type: 3}
+      propertyPath: _projectilePrefab
+      value: 
+      objectReference: {fileID: 2939693844124788158, guid: 837a16748362ec549babae4aa15b2023, type: 3}
+    - target: {fileID: 35217099990509625, guid: b6362f50ca5d7b145ba56bc6c23080ee, type: 3}
+      propertyPath: _weakProjectilePrefab
+      value: 
+      objectReference: {fileID: 2939693844124788158, guid: fdd74cd0f5e713e4cb7fd4bb213f24fd, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 1718390857548102, guid: b6362f50ca5d7b145ba56bc6c23080ee, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1885061409686635215}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b6362f50ca5d7b145ba56bc6c23080ee, type: 3}
---- !u!1 &6308088380605636875 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1718390857548102, guid: b6362f50ca5d7b145ba56bc6c23080ee, type: 3}
-  m_PrefabInstance: {fileID: 6308643866100817997}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1885061409686635215
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6308088380605636875}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e7af36dd6ea09496590a6c8f7d09aed6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  target: {fileID: 852253630015273747}
-  smooth: 1
-  turnSpeed: 720
-  deadZone: 0.0001
-  flatten: 0
-  useParentUp: 1
-  aimAxis: 0
-  pivotOverride: {fileID: 0}
 --- !u!4 &6313439464757502407 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4813205879603594, guid: b6362f50ca5d7b145ba56bc6c23080ee, type: 3}

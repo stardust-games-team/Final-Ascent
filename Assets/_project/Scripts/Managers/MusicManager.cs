@@ -6,9 +6,14 @@ public class MusicManager : MonoBehaviour
 {
     public static MusicManager Instance;
 
-    [SerializeField] AudioMixerSnapshot _patrolSnapshot, _combatSnapshot;
-    [SerializeField] AudioClip[] _patrolMusic, _combatMusic;
-    [SerializeField] AudioSource _patrolAudioSource, _combatAudioSource;
+    [SerializeField] AudioMixerSnapshot _patrolSnapshot;
+    [SerializeField] AudioMixerSnapshot _combatSnapshot;
+    [SerializeField] AudioMixerSnapshot _gameOverSnapshot;
+    [SerializeField] AudioClip[] _patrolMusic;
+    [SerializeField] AudioClip[] _combatMusic;
+    [SerializeField] AudioSource _patrolAudioSource;
+    [SerializeField] AudioSource _combatAudioSource;
+    [SerializeField] AudioSource _gameOverAudioSource;
 
     int _patrolMusicIndex, _combatMusicIndex;
 
@@ -22,9 +27,6 @@ public class MusicManager : MonoBehaviour
 
         Instance = this;
     }
-
-
-
 
     public void PlayCombatMusic()
     {
@@ -45,6 +47,26 @@ public class MusicManager : MonoBehaviour
         _patrolSnapshot.TransitionTo(1f);
         _patrolMusicIndex = (_patrolMusicIndex + 1) % _patrolMusic.Length;
     }
+
+    public void PlayGameOverMusic()
+    {
+         _gameOverAudioSource.gameObject.SetActive(true);  
+    _gameOverAudioSource.enabled = true; 
+        SafePlay(_gameOverAudioSource);
+        _gameOverSnapshot.TransitionTo(1f);
+    }
+
+    void SafePlay(AudioSource source)
+{
+    if (!source.gameObject.activeInHierarchy)
+        source.gameObject.SetActive(true);
+
+    if (!source.enabled)
+        source.enabled = true;
+
+    source.Play();
+}
+
 
 
 }

@@ -5237,6 +5237,7 @@ GameObject:
   - component: {fileID: 7476190796351199152}
   - component: {fileID: 5527643745224093906}
   - component: {fileID: 2162521564222258886}
+  - component: {fileID: 4929383888965385658}
   m_Layer: 9
   m_Name: EnemyShipEscortFighter
   m_TagString: Untagged
@@ -5370,6 +5371,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e32efc348d8e5f4998ddc0ffd2322ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4929383888965385658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5287651745759757320}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aeb3cb4f3f0834edda893ce4f0359885, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _points: 1000
 --- !u!1 &5307573344500019521
 GameObject:
   m_ObjectHideFlags: 0

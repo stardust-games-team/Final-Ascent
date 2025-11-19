@@ -79,7 +79,11 @@ public class Missile : MonoBehaviour
 
     void OnCollisionEnter(Collision other)
     {
-        if (_impactSound) _audioSource.PlayOneShot(_impactSound);
+        if (_impactSound && _audioSource && _audioSource.enabled)
+{
+    _audioSource.PlayOneShot(_impactSound);
+}
+
         if(other.collider.TryGetComponent<IDamageable>(out var damageable))
         {
             damageable.TakeDamage(_damage, other.GetContact(0).point);

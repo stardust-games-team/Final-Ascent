@@ -4,13 +4,16 @@ using UnityEngine.UI;
 
 public class TargetIndicator : MonoBehaviour
 {
-    [SerializeField] Image _targetBox, _lockOnImage, _offScreenImage;
+    [SerializeField] Image _targetBox;
+    [SerializeField] Image _lockOnImage;
+    [SerializeField] Image _offScreenImage;
     [SerializeField] float _offScreenMargin = 45f;
 
     Transform _target;
     Canvas _mainCanvas;
     Camera _mainCamera;
-    RectTransform _rectTransform, _canvasRect;
+    RectTransform _rectTransform;
+    RectTransform _canvasRect;
 
     Vector3 _screenCenter = Vector3.zero;
 
@@ -18,6 +21,7 @@ public class TargetIndicator : MonoBehaviour
     {
         get
         {
+            if (_canvasRect == null) return Vector3.zero;
             var rect = _canvasRect.rect;
             _screenCenter.x = rect.width * 0.5f;
             _screenCenter.y = rect.height * 0.5f;
@@ -36,10 +40,11 @@ public class TargetIndicator : MonoBehaviour
 
     void LateUpdate()
     {
-        // Get Normalized position of target
+        // Check for null references to avoid crashes
+        if (_target == null || _mainCamera == null || _canvasRect == null) return;
+
         Vector3 targetViewportPos = _mainCamera.WorldToViewportPoint(_target.position);
 
-        // Display target reticle on target
         if (TargetIsVisible(targetViewportPos))
         {
             DisplayOnScreenReticle(targetViewportPos);
@@ -51,37 +56,44 @@ public class TargetIndicator : MonoBehaviour
 
     public void Init(Transform target, Canvas mainCanvas)
     {
+        if (target == null || mainCanvas == null) return;
+
         _target = target;
         Key = _target.GetInstanceID();
         _mainCanvas = mainCanvas;
         _canvasRect = _mainCanvas.GetComponent<RectTransform>();
-        _mainCamera = Camera.main;
+        _mainCamera = Camera.main; // safely get main camera
     }
-
 
     bool TargetIsVisible(Vector3 position)
     {
-        return (position.x is >= 0 and <= 1 && position.y is >= 0 and <= 1 && position.z >= 0);
+        return (position.x >= 0 && position.x <= 1 &&
+                position.y >= 0 && position.y <= 1 &&
+                position.z >= 0);
     }
 
     void DisplayOnScreenReticle(Vector3 targetViewportPos)
     {
+        if (_mainCamera == null) return;
+
         Vector3 position = _mainCamera.ViewportToScreenPoint(targetViewportPos);
-        position.z = 0;
+        position.z = 0f;
         _rectTransform.position = position;
-        _targetBox.enabled = !LockedOn;
-        _lockOnImage.enabled = LockedOn;
-        _offScreenImage.enabled = false;
+
+        if (_targetBox != null) _targetBox.enabled = !LockedOn;
+        if (_lockOnImage != null) _lockOnImage.enabled = LockedOn;
+        if (_offScreenImage != null) _offScreenImage.enabled = false;
     }
 
     void DisplayOffScreenReticle(Vector3 targetViewportPos)
     {
-        _targetBox.enabled = false;
-        _lockOnImage.enabled = false;
+        if (_mainCamera == null) return;
+
+        if (_targetBox != null) _targetBox.enabled = false;
+        if (_lockOnImage != null) _lockOnImage.enabled = false;
 
         Vector3 indicatorPosition = (_mainCamera.ViewportToScreenPoint(targetViewportPos) - ScreenCenter) *
-                                        Mathf.Sign(targetViewportPos.z);
-
+                                    Mathf.Sign(targetViewportPos.z);
         indicatorPosition.z = 0;
 
         float x = (ScreenCenter.x - _offScreenMargin) / Mathf.Abs(indicatorPosition.x);
@@ -90,15 +102,13 @@ public class TargetIndicator : MonoBehaviour
         if (x < y)
         {
             float angle = Vector3.SignedAngle(Vector3.right, indicatorPosition, Vector3.forward);
-            indicatorPosition.x = Mathf.Sign(indicatorPosition.x) * (_screenCenter.x - _offScreenMargin) *
-                                    _canvasRect.localScale.x;
+            indicatorPosition.x = Mathf.Sign(indicatorPosition.x) * (_screenCenter.x - _offScreenMargin) * _canvasRect.localScale.x;
             indicatorPosition.y = Mathf.Tan(Mathf.Deg2Rad * angle) * indicatorPosition.x;
         }
         else
         {
             float angle = Vector3.SignedAngle(Vector3.up, indicatorPosition, Vector3.forward);
-            indicatorPosition.y = Mathf.Sign(indicatorPosition.y) * (_screenCenter.y - _offScreenMargin) *
-                                    _canvasRect.localScale.y;
+            indicatorPosition.y = Mathf.Sign(indicatorPosition.y) * (_screenCenter.y - _offScreenMargin) * _canvasRect.localScale.y;
             indicatorPosition.x = -Mathf.Tan(Mathf.Deg2Rad * angle) * indicatorPosition.y;
         }
 
@@ -108,9 +118,7 @@ public class TargetIndicator : MonoBehaviour
         Vector3 rotation = _rectTransform.eulerAngles;
         rotation.z = Vector3.SignedAngle(Vector3.up, indicatorPosition - ScreenCenter, Vector3.forward);
         _rectTransform.eulerAngles = rotation;
-        _offScreenImage.enabled = true;
+
+        if (_offScreenImage != null) _offScreenImage.enabled = true;
     }
-
-
-
 }

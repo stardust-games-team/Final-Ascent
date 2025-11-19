@@ -5,13 +5,11 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    public event Action<GameState> GameStateChanged = delegate(GameState state){};
-    
-    public GameState GameState { get; private set; }
-    
-    bool ShouldQuitGame => Input.GetKeyUp(KeyCode.Escape);
+    public event Action<GameState> GameStateChanged = delegate { };
 
-    
+    public GameState GameState { get; private set; }
+
+    bool ShouldQuitGame => Input.GetKeyUp(KeyCode.Escape);
 
     void Awake()
     {
@@ -22,17 +20,11 @@ public class GameManager : MonoBehaviour
         }
         Instance = this;
     }
+
     void Start()
     {
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = false;
-    }
-
-    void SetGameState(GameState gameState)
-    {
-        if (gameState == GameState) return;
-        GameState = gameState;
-        GameStateChanged(gameState);
     }
 
     void OnEnable()
@@ -49,9 +41,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void InCombat (bool inCombat)
+    public void InCombat(bool inCombat)
     {
-        if(GameState == GameState.Combat) return;
+        if (GameState == GameState.Combat) return;
+
         if (inCombat)
         {
             MusicManager.Instance.PlayCombatMusic();
@@ -62,21 +55,34 @@ public class GameManager : MonoBehaviour
         MusicManager.Instance.PlayPatrolMusic();
     }
 
-
     public void PlayerWon()
     {
         MusicManager.Instance.PlayGameOverMusic();
         SetGameState(GameState.GameOver);
-        print("WON");
+        Debug.Log("Player Won!");
+    }
+
+    public void PlayerLost()
+    {
+        // When the player dies (but is disabled), just update game state
+        MusicManager.Instance.PlayGameOverMusic();
+        SetGameState(GameState.GameOver);
+        Debug.Log("Player Lost!");
+    }
+
+    void SetGameState(GameState gameState)
+    {
+        if (gameState == GameState) return;
+        GameState = gameState;
+        GameStateChanged(gameState);
     }
 
     void QuitGame()
     {
-    #if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false; 
-    #else
-            // todo handle WebGL
-           Application.Quit();
-    #endif
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
     }
 }
