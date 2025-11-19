@@ -76,10 +76,9 @@ public class EnemyShipManager : MonoBehaviour
             if (ship.gameObject.GetInstanceID() != id) continue;
             _enemyShips.RemoveAt(i);
             ship.GetComponent<EnemyShipController>().ShipDestroyed.RemoveListener(OnShipDestroyed);
-            GameManager.Instance.PlayerWon();
             Destroy(ship.gameObject);
             
-            print("Ship destroyed......");
+            print("Enemy Ship destroyed......");
             return;
         }
 
