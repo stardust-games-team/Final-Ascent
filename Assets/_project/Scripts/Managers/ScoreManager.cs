@@ -11,6 +11,8 @@ public class ScoreManager : MonoBehaviour
     public int Score { get; private set; }
     public int HighScore { get; private set; }
 
+    const string HighScoreKey = "HighScore";
+
     static Queue<int> _pendingPoints = new Queue<int>();
 
     void Awake()
@@ -29,14 +31,41 @@ public class ScoreManager : MonoBehaviour
         }
     }
 
+    void Start(){
+        HighScore = PlayerPrefs.GetInt(HighScoreKey, 0);
+        HighScoreChanged(HighScore);
+    }
+
+    void OnDisable()
+    {
+        PlayerPrefs.SetInt(HighScoreKey, HighScore);
+    }
+
     public void ResetScore()
     {
         Score = 0;
         ScoreChanged(Score);
     }
+    public void ResetHighScore()
+{
+    PlayerPrefs.SetInt(HighScoreKey, 0);
+    HighScore = 0;
+    HighScoreChanged(HighScore);
+    Debug.Log("High Score reset!");
+}
+
+    void Update()
+{
+    if (Input.GetKeyDown(KeyCode.R))
+    {
+        ResetHighScore();
+    }
+}
+
 
     public void AddPoints(int points)
     {
+        if (GameManager.Instance.GameState == GameState.GameOver) return;
         Score += points;
         ScoreChanged(Score);
 
