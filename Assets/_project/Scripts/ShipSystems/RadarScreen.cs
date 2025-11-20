@@ -1,7 +1,5 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class RadarScreen : MonoBehaviour
@@ -74,30 +72,21 @@ public class RadarScreen : MonoBehaviour
 
     void LateUpdate()
     {
-        if (GameManager.Instance.GameState == GameState.GameOver) return;
-
-        // Remove destroyed targets
-        _targetsInRange = _targetsInRange.Where(t => t != null).ToList();
-
         DrawTargetBlips();
-
         UIManager.Instance.UpdateTargetIndicators(
             _targetsInRange,
             LockedOnTarget != null ? LockedOnTarget.GetInstanceID() : -1
         );
 
-        // Manage combat state
-        if (TargetsInRange > 0)
+        // Combat & game over handling
+        if (GameManager.Instance != null && GameManager.Instance.GameState != GameState.GameOver)
         {
-            if (!InCombat)
+            if (TargetsInRange > 0 && !InCombat)
             {
                 InCombat = true;
                 GameManager.Instance.InCombat(true);
             }
-        }
-        else
-        {
-            if (InCombat)
+            else if (TargetsInRange == 0 && InCombat)
             {
                 InCombat = false;
                 GameManager.Instance.InCombat(false);
@@ -115,59 +104,54 @@ public class RadarScreen : MonoBehaviour
             _targetsInRange.Clear();
             LockedOnTarget = null;
             float closest = _lockOnRange;
-            Vector3 myPosition = _transform.position;
 
             int size = Physics.OverlapSphereNonAlloc(_transform.position, _radarRange, _targetColliders, _layerMask);
             for (int i = 0; i < size; ++i)
             {
-                Transform target = GetRootTransform(i);
+                if (_targetColliders[i] == null) continue;
 
-                // skip destroyed or inactive targets
+                Transform target = GetRootTransform(i);
                 if (target == null || !target.gameObject.activeSelf) continue;
 
-                closest = TryLockOnTarget(target, myPosition, closest);
+                // Lock-on logic
+                float distance = Vector3.Distance(target.position, _transform.position);
+                float angle = Vector3.Angle(target.position - _transform.position, _transform.forward);
+
+                if (distance < closest && angle < _lockedOnRadius)
+                {
+                    closest = distance;
+                    LockedOnTarget = target;
+                }
 
                 if (!_targetsInRange.Contains(target))
-                {
                     _targetsInRange.Add(target);
-                }
             }
 
             yield return _waitForSeconds;
         }
     }
 
-    float TryLockOnTarget(Transform target, Vector3 myPosition, float closest)
-    {
-        Vector3 targetPosition = target.position;
-        float distance = Vector3.Distance(targetPosition, myPosition);
-        Vector3 direction = targetPosition - myPosition;
-        float angle = Vector3.Angle(direction, _transform.forward);
-
-        if (distance < closest && angle < _lockedOnRadius)
-        {
-            closest = distance;
-            LockedOnTarget = target;
-        }
-
-        return closest;
-    }
-
     void DrawTargetBlips()
 {
-    if (_radarTransform == null || _targetsInRange == null) return;
+    if (_radarTransform == null || _blipPrefab == null) return;
 
     ClearDisplay();
 
-    foreach (var target in _targetsInRange.ToList()) // ToList() to safely modify list
+    foreach (var target in _targetsInRange)
     {
-        if (target == null) continue; // skip destroyed targets
+        if (target == null) continue;
+
         _targetPosition = (target.position - _player.position) / _radarRange;
         CalculateBlipPosition();
-        var blip = Instantiate(_blipPrefab, _radarTransform);
-        blip.transform.localScale = _blipPrefab.transform.localScale;
-        blip.transform.localPosition = _blipPosition;
-        DrawHeightLines(blip);
+
+        // null check added here
+        if (_blipPrefab != null)
+        {
+            var blip = Instantiate(_blipPrefab, _radarTransform);
+            blip.transform.localScale = _blipPrefab.transform.localScale;
+            blip.transform.localPosition = _blipPosition;
+            DrawHeightLines(blip);
+        }
     }
 }
 
@@ -206,7 +190,6 @@ public class RadarScreen : MonoBehaviour
         _angleRadians = _radarAngle * Mathf.Deg2Rad;
         _blipX = _normalizedDistance * Mathf.Cos(_angleRadians);
         _blipY = _normalizedDistance * Mathf.Sin(_angleRadians);
-
         _blipPosition.x = _blipX * (_radarWidth * 0.25f);
         _blipPosition.y = _blipY * (_radarWidth * 0.25f) * -1f;
 
@@ -216,30 +199,28 @@ public class RadarScreen : MonoBehaviour
         _blipPosition.z = -0.01f;
     }
 
-void ClearDisplay()
-{
-    if (_radarTransform == null) return; // <-- check the transform itself
-
-    for (int i = _radarTransform.childCount - 1; i >= 0; i--)
+    void ClearDisplay()
     {
-        Transform child = _radarTransform.GetChild(i);
-        if (child != null) // Unity's null check handles destroyed objects
+        if (_radarTransform == null) return;
+
+        for (int i = _radarTransform.childCount - 1; i >= 0; i--)
         {
-            child.SetParent(null);
-            Destroy(child.gameObject);
+            var child = _radarTransform.GetChild(i);
+            if (child != null)
+            {
+                child.SetParent(null);
+                Destroy(child.gameObject);
+            }
         }
     }
-}
-
-
-
 
     Transform GetRootTransform(int i)
     {
-        Transform root = _targetColliders[i]?.transform;
-        if (root == null) return null;
+        if (_targetColliders[i] == null) return null;
 
+        Transform root = _targetColliders[i].transform;
         int layer = root.gameObject.layer;
+
         while (root.parent != null && layer == root.parent.gameObject.layer)
         {
             root = root.parent;

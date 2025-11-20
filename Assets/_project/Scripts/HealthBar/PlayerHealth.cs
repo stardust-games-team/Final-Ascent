@@ -1,15 +1,17 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(DamageHandler))]
 public class PlayerHealth : MonoBehaviour
 {
+    [Header("Ship Data")]
+    [SerializeField] ShipDataSo shipData;
+
     [Header("Shield (instant)")]
-    public float maxShield = 100f;
     public Image shieldBar;
 
     [Header("Health (chip effect)")]
-    public int maxHealth = 500;               
     public float chipSpeed = 2f;
     public Image frontHealthBar;
     public Image backHealthBar;
@@ -23,7 +25,6 @@ public class PlayerHealth : MonoBehaviour
     public bool removeOnShieldDepleted = true;
     public bool removeOnHealthDepleted = false;
     public bool destroyInsteadOfDisable = false;
-    bool _shieldRemoved;
 
     [Header("Game Over Panel")]
     public GameObject gameOverPanel;
@@ -32,18 +33,21 @@ public class PlayerHealth : MonoBehaviour
     float shield;
     float healthLerpTimer;
     bool _playerDead = false;
+    bool _shieldRemoved = false;
 
     DamageHandler _damageHandler;
 
     void Awake()
     {
-        // Ensure DamageHandler exists
         _damageHandler = GetComponent<DamageHandler>();
         if (_damageHandler == null)
             _damageHandler = gameObject.AddComponent<DamageHandler>();
 
-        // Initialize health
-        _damageHandler.Init(maxHealth);
+        // Initialize health via DamageHandler using ShipData
+        if (shipData != null)
+            _damageHandler.Init(shipData.MaxHealth);
+        else
+            _damageHandler.Init(500); // fallback if ShipData is missing
     }
 
     void OnEnable()
@@ -63,7 +67,9 @@ public class PlayerHealth : MonoBehaviour
 
     void Start()
     {
-        shield = maxShield;
+        // Initialize shield from ShipData
+        shield = shipData != null ? shipData.ShieldStrength : 100f;
+
         if (shieldBar) shieldBar.fillAmount = 1f;
         if (frontHealthBar) frontHealthBar.fillAmount = 1f;
         if (backHealthBar) backHealthBar.fillAmount = 1f;
@@ -72,23 +78,17 @@ public class PlayerHealth : MonoBehaviour
 
     void Update()
     {
-        // clamp shield
-        shield = Mathf.Clamp(shield, 0f, maxShield);
-        // UI updates handled by events
+        shield = Mathf.Clamp(shield, 0f, shipData != null ? shipData.ShieldStrength : 100f);
     }
 
-    // Event called when DamageHandler.HealthChanged is triggered
     void OnHealthChanged()
     {
-        int current = _damageHandler.Health;
-        int max = _damageHandler.MaxHealth;
-
-        float target = max > 0 ? (float)current / max : 0f;
+        float target = _damageHandler.MaxHealth > 0 ? (float)_damageHandler.Health / _damageHandler.MaxHealth : 0f;
 
         if (frontHealthBar && backHealthBar)
             UpdateChipBar(frontHealthBar, backHealthBar, ref healthLerpTimer, target, chipSpeed);
 
-        if (!_playerDead && current <= 0)
+        if (!_playerDead && _damageHandler.Health <= 0)
             HandleDeath();
     }
 
@@ -102,25 +102,21 @@ public class PlayerHealth : MonoBehaviour
     {
         _playerDead = true;
 
-        // Show Game Over UI
         if (gameOverPanel) gameOverPanel.SetActive(true);
 
-        // Notify GameManager
         if (GameManager.Instance != null)
             GameManager.Instance.PlayerLost();
 
-        // Detach camera so it isn't destroyed
         Camera mainCam = Camera.main;
         if (mainCam != null && mainCam.transform.IsChildOf(transform))
             mainCam.transform.parent = null;
 
-        // Disable all other scripts except this one
         foreach (var comp in GetComponents<MonoBehaviour>())
             if (comp != this) comp.enabled = false;
 
-        // Disable visuals/colliders
         foreach (var renderer in GetComponentsInChildren<Renderer>())
             renderer.enabled = false;
+
         foreach (var collider in GetComponentsInChildren<Collider>())
             collider.enabled = false;
 
@@ -156,27 +152,31 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    public void TakeDamage(float amount)
+public void TakeDamage(float amount)
+{
+    if (_playerDead || amount <= 0f) return;
+
+    float damageRemaining = amount;
+
+    // Shield absorbs first
+    if (shield > 0f)
     {
-        if (_playerDead || amount <= 0f) return;
+        float shieldAbsorb = Mathf.Min(shield, damageRemaining);
+        shield -= shieldAbsorb;
+        damageRemaining -= shieldAbsorb;
 
-        float remaining = amount;
-
-        // DamageHandler handles integer health
-        int damageToHealth = Mathf.FloorToInt(remaining);
-        if (damageToHealth > 0)
-        {
-            _damageHandler.TakeDamage(damageToHealth, transform.position);
-            remaining -= damageToHealth;
-        }
-
-        // Overflow hits shield instantly
-        if (remaining > 0f)
-        {
-            shield = Mathf.Max(0f, shield - remaining);
-            if (shieldBar) shieldBar.fillAmount = maxShield > 0f ? shield / maxShield : 0f;
-        }
+        if (shieldBar) shieldBar.fillAmount = shipData != null ? shield / shipData.ShieldStrength : shield / 100f;
     }
+
+    // Remaining damage goes directly to DamageHandler
+    if (damageRemaining > 0f)
+    {
+        int intDamage = Mathf.CeilToInt(damageRemaining); // round up so small damage isn't lost
+        _damageHandler.TakeDamage(intDamage, transform.position);
+    }
+
+    TryRemoveShieldIfNeeded();
+}
 
     void OnCollisionEnter(Collision c)
     {
@@ -196,7 +196,7 @@ public class PlayerHealth : MonoBehaviour
 
         bool shouldRemove =
             (removeOnShieldDepleted && shield <= 0f) ||
-            (removeOnHealthDepleted && _damageHandler != null && _damageHandler.Health <= 0);
+            (removeOnHealthDepleted && _damageHandler.Health <= 0);
 
         if (shouldRemove)
         {

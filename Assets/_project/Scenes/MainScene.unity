@@ -1027,9 +1027,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _enemyShipPrefabs:
   - {fileID: 5287651745759757320, guid: 1f41d5a9d004be34782c24ff2073f605, type: 3}
-  _maxEnemies: 1
-  _firstSpawnInterval: 10
-  _spawnInterval: 30
+  _maxEnemies: 10
+  _firstSpawnInterval: 5
+  _spawnInterval: 10
   _minSpawnRange: 500
   _maxSpawnRange: 1000
 --- !u!1 &548567729
@@ -1161,7 +1161,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6224473573716969044, guid: b2acc77eb0cc6674ebf31b43cc86b6d1, type: 3}
       propertyPath: _asteroidCount
-      value: 2545
+      value: 1209
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1491,7 +1491,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6224473573716969044, guid: b2acc77eb0cc6674ebf31b43cc86b6d1, type: 3}
       propertyPath: _asteroidCount
-      value: 2347
+      value: 1011
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1503,67 +1503,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4542342954331818554, guid: b2acc77eb0cc6674ebf31b43cc86b6d1, type: 3}
   m_PrefabInstance: {fileID: 628372331}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &636582406
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 1571784774252182515, guid: 1f41d5a9d004be34782c24ff2073f605, type: 3}
-      propertyPath: m_PresetInfoIsWorld
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3607978320759443235, guid: 1f41d5a9d004be34782c24ff2073f605, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 35.001656
-      objectReference: {fileID: 0}
-    - target: {fileID: 3607978320759443235, guid: 1f41d5a9d004be34782c24ff2073f605, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 9.637562
-      objectReference: {fileID: 0}
-    - target: {fileID: 3607978320759443235, guid: 1f41d5a9d004be34782c24ff2073f605, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 162.36327
-      objectReference: {fileID: 0}
-    - target: {fileID: 3607978320759443235, guid: 1f41d5a9d004be34782c24ff2073f605, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.8289747
-      objectReference: {fileID: 0}
-    - target: {fileID: 3607978320759443235, guid: 1f41d5a9d004be34782c24ff2073f605, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.127784
-      objectReference: {fileID: 0}
-    - target: {fileID: 3607978320759443235, guid: 1f41d5a9d004be34782c24ff2073f605, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0.5381368
-      objectReference: {fileID: 0}
-    - target: {fileID: 3607978320759443235, guid: 1f41d5a9d004be34782c24ff2073f605, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0.082952194
-      objectReference: {fileID: 0}
-    - target: {fileID: 3607978320759443235, guid: 1f41d5a9d004be34782c24ff2073f605, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 17.526
-      objectReference: {fileID: 0}
-    - target: {fileID: 3607978320759443235, guid: 1f41d5a9d004be34782c24ff2073f605, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 65.98
-      objectReference: {fileID: 0}
-    - target: {fileID: 3607978320759443235, guid: 1f41d5a9d004be34782c24ff2073f605, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5287651745759757320, guid: 1f41d5a9d004be34782c24ff2073f605, type: 3}
-      propertyPath: m_Name
-      value: EnemyShipEscortFighter
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 1f41d5a9d004be34782c24ff2073f605, type: 3}
 --- !u!1 &691507778
 GameObject:
   m_ObjectHideFlags: 0
@@ -1860,7 +1799,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6224473573716969044, guid: b2acc77eb0cc6674ebf31b43cc86b6d1, type: 3}
       propertyPath: _asteroidCount
-      value: 2446
+      value: 1110
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2001,7 +1940,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6224473573716969044, guid: b2acc77eb0cc6674ebf31b43cc86b6d1, type: 3}
       propertyPath: _asteroidCount
-      value: 2743
+      value: 1312
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2030,16 +1969,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1140c25cbf5a43d99d0a04eeb54992e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxShield: 500
+  shipData: {fileID: 11400000, guid: 22d35642d3c18474b9fe1710396b6ba0, type: 2}
   shieldBar: {fileID: 1913916272}
-  maxHealth: 1000
   chipSpeed: 50
   frontHealthBar: {fileID: 1502836971}
   backHealthBar: {fileID: 1357029901}
   damageLayers:
     serializedVersion: 2
     m_Bits: 1536
-  contactDamage: 30
+  contactDamage: 50
   shieldObject: {fileID: 1598213156}
   removeOnShieldDepleted: 1
   removeOnHealthDepleted: 1
@@ -4197,6 +4135,11 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &1834085111 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6886960211010354525, guid: d669a9203c9fd51459187e879277b985, type: 3}
+  m_PrefabInstance: {fileID: 6827345329953263326}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1860438538
 GameObject:
   m_ObjectHideFlags: 0
@@ -4645,11 +4588,6 @@ MonoBehaviour:
 Transform:
   m_CorrespondingSourceObject: {fileID: 5641234186200226725, guid: d669a9203c9fd51459187e879277b985, type: 3}
   m_PrefabInstance: {fileID: 6827345329953263326}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1974264435 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 538764769917938275, guid: 1f41d5a9d004be34782c24ff2073f605, type: 3}
-  m_PrefabInstance: {fileID: 636582406}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &2005611344
 GameObject:
@@ -5225,7 +5163,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6224473573716969044, guid: b2acc77eb0cc6674ebf31b43cc86b6d1, type: 3}
       propertyPath: _asteroidCount
-      value: 4456
+      value: 1307
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5396,7 +5334,7 @@ PrefabInstance:
     - target: {fileID: 6592561114459225818, guid: d669a9203c9fd51459187e879277b985, type: 3}
       propertyPath: _radarScreen
       value: 
-      objectReference: {fileID: 1974264435}
+      objectReference: {fileID: 1834085111}
     - target: {fileID: 7692783246381764002, guid: d669a9203c9fd51459187e879277b985, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -5438,7 +5376,8 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 1433398194550781236, guid: d669a9203c9fd51459187e879277b985, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 3997426112270024731, guid: d669a9203c9fd51459187e879277b985, type: 3}
@@ -5459,4 +5398,3 @@ SceneRoots:
   - {fileID: 929493245}
   - {fileID: 6827345329953263326}
   - {fileID: 1122764562}
-  - {fileID: 636582406}

@@ -55,7 +55,7 @@ public class Blaster : MonoBehaviour
         Rigidbody rigidBody,
         float maxCapcitor = 1000f,
         float costPerShot = 50f,
-        float rechargeRate = 20f)
+        float rechargeRate = 50f)
     {
         // Debug.Log($"Blaster.Init({weaponInput}, {coolDown}, launchForce, {duration}");
         _weaponInput = weaponInput;
