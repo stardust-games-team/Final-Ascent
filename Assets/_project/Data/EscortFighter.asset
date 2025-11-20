@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ef9314a30edd9d46ad5313348be47ea, type: 3}
   m_Name: EscortFighter
   m_EditorClassIdentifier: 
-  _thrustForce: 7000
-  _pitchForce: 3000
+  _thrustForce: 8000
+  _pitchForce: 1000
   _rollForce: 1000
   _yawForce: 2000
   _shieldStrength: 2000

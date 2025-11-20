@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ef9314a30edd9d46ad5313348be47ea, type: 3}
   m_Name: EnemyFighter
   m_EditorClassIdentifier: 
-  _thrustForce: 7500
+  _thrustForce: 8200
   _pitchForce: 1400
   _rollForce: 1000
   _yawForce: 1200

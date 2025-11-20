@@ -89,7 +89,7 @@ public class EnemyShipController : ShipController
     }
     #endregion
 
-    // Added null checks for PlayerShip
+    // Null checks for PlayerShip
     bool InAttackRange
     {
         get
@@ -126,9 +126,6 @@ public class EnemyShipController : ShipController
         // - _damageHandler.ObjectDestroyed.AddListener(DestroyShip)
         base.OnEnable();
 
-        // Now we need OnShipDied to run BEFORE DestroyShip
-        // Since we can't reorder existing listeners, we need a workaround:
-        // Subscribe our own callback that sets _destroyed before anything else
         if (_damageHandler != null)
         {
             // Subscribe to HealthChanged to intercept before health reaches 0
